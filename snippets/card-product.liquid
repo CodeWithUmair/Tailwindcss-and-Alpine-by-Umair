@@ -11,56 +11,70 @@ Accepts:
 - lazy_load: {Boolean} Image should be lazy loaded. Default: true (optional)
 - show_quick_add: {Boolean} Show the quick add button.
 - section_id: {String} The ID of the section that contains this card.
-- horizontal_class: {Boolean} Add a card--horizontal class if set to true. Default: false (optional)
-- horizontal_quick_add: {Boolean} Changes the quick add button styles when set to true. Default: false (optional)
+- horizontal_class: {Boolean} Add a card--horizontal class if set to true. Default: false
 
 Usage:
 {% render 'card-product', show_vendor: section.settings.show_vendor %}
 {% endcomment %}
 
 {%- if card_product and card_product != empty -%}
-  <a href="{{ card_product.url }}" class="card-wrapper border group block">
-    <div class="card">
 
+  <div class="card-wrapper product-card-wrapper border">
+    <div class="card">
       {% if card_product.featured_media %}
-        {% assign image_class = '' %}
-        {% if card_product.media[1] != blank and show_secondary_image %}
-          {% assign image_class = image_class | append: 'group-hover:hidden' %}
-        {% endif %}
         <div class="card_image">
-          {{ card_product.featured_media | image_url: width: 900 | image_tag: loading: 'lazy', class: image_class }}
-          {% if card_product.media[1] != blank and show_secondary_image %}
-            {{ card_product.media[1] | image_url: width: 900 | image_tag: loading: 'lazy', class: 'hidden group-hover:block' }}
-          {% endif %}
-        </div>
-      {% else %}
-        <div class="card_image">
-          {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+          {{ card_product.featured_media | image_url: width: 900 | image_tag: loading: 'lazy' }}
+
         </div>
       {% endif %}
 
-      <h3 class="card__title p-2">
+      <h3 class="card__title">
         {{ card_product.title }}
       </h3>
-
-      {% render '_price-element', product: card_product, class: 'px-2 pb-2' %}
-
     </div>
-  </a>
+  </div>
 {%- else -%}
-  <div class="card-wrapper border group">
-    <div class="card">
-      <div class="card_image">
-        {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+  <div class="product-card-wrapper card-wrapper underline-links-hover">
+    <div class="
+                                                                                            card
+                                                                                            card--{{ settings.card_style }}
+                                                                                            card--text
+                                                                                            {% if extend_height %} card--extend-height{% endif %}
+                                                                                            {% if settings.card_style == 'card' %} color-{{ settings.card_color_scheme }} gradient{% endif %}
+                                                                                            {% if card_product.featured_media == nil and settings.card_style == 'card' %} ratio{% endif %}
+                                                                                            {{ horizontal_class }}
+                                                                                          " style="--ratio-percent: 100%;">
+      <div class="card__inner {% if settings.card_style == 'standard' %}color-{{ settings.card_color_scheme }} gradient{% endif %}{% if settings.card_style == 'standard' %} ratio{% endif %}" style="--ratio-percent: 100%;">
+        <div class="card__content">
+          <div class="card__information">
+            <h3 class="card__heading">
+              <a
+                role="link"
+                aria-disabled="true"
+                class="full-unstyled-link">
+                {{ 'onboarding.product_title' | t }}
+              </a>
+            </h3>
+          </div>
+        </div>
       </div>
-
-      <h3 class="card__title p-2">
-        Product Title
-      </h3>
-
-      <div class="price__element px-2 pb-2 text-gray-600">
-        <div class="price__element-normal">
-          $0.00
+      <div class="card__content">
+        <div class="card__information">
+          <h3 class="card__heading{% if settings.card_style == 'standard' %} h5{% endif %}">
+            <a
+              role="link"
+              aria-disabled="true"
+              class="full-unstyled-link">
+              {{ 'onboarding.product_title' | t }}
+            </a>
+          </h3>
+          <div class="card-information">
+            {%- if show_vendor -%}
+              <span class="visually-hidden">{{ 'accessibility.vendor' | t }}</span>
+              <div class="caption-with-letter-spacing light">{{ 'products.product.vendor' | t }}</div>
+            {%- endif -%}
+            {% render 'price' %}
+          </div>
         </div>
       </div>
     </div>
